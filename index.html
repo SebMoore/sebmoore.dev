@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>3d Cube</title>
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+        html, body {
+            margin: 0;
+            display: block;
+            height: 100%;
+        }
+    
+    #c {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+    .footer {
+        font-family: 'Rubik', sans-serif;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #292929;
+        color: rgb(255, 255, 255);
+        text-align: center;
+    }
+    /* Tooltip styling */
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 280px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px; 
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -140px;    
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    /* Make footer elements on one line */
+    #parent { white-space: nowrap; }
+    .child { display: inline-block; } 
+    #github {
+        position: relative;
+        float: right;
+        top: 50%;
+        -ms-transform: translateY(25%);
+        transform: translateY(25%);
+        padding-right: 10px;
+    }
+    </style>
+</head>
+<body>
+    <script src="js/three.js"></script>
+    <script src="js/Line2.js"></script>
+    <script src="js/LineGeometry.js"></script>
+    <script src="js/LineMaterial.js"></script>
+    <script src="js/LineSegments2.js"></script>
+    <script src="js/LineSegmentsGeometry.js"></script>
+    <script src="js/Wireframe.js"></script>
+    <script src="js/WireframeGeometry2.js"></script>
+    <script src="js/EdgesGeometry2.js"></script>
+    <script src="js/FontLoader.js"></script>
+    <script src="js/TextGeometry.js"></script>
+    <script>
+        //Scene + camera setup
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+        );
+        camera.position.z = 5;
+
+        //Set up renderer
+        var renderer = new THREE.WebGLRenderer( { antialias: true});
+        renderer.setSize(window.innerWidth, (window.innerHeight * 0.999));
+        document.body.appendChild(renderer.domElement);
+
+        //Set up resize handler
+        function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        window.addEventListener('resize', onWindowResize);
+
+        //Set up hemisphere light (sun)
+        const skyColor = 0xB1E1FF;  // light blue
+        const groundColor = 361401;  // brownish orange
+        const intensity = 2;
+        const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
+        scene.add(light);
+
+
+        //Set up materials
+        var matLine = new THREE.LineMaterial({color: 0x0e48cf,linewidth: 4});
+        matLine.resolution.set(window.innerWidth, window.innerHeight);
+        var matCube = new THREE.MeshBasicMaterial({color: 0x0e48cf});        
+
+        // Add outside cube
+        var cube1 = new THREE.BoxGeometry(10, 10, 100);
+        var geo1 = new THREE.EdgesGeometry2(cube1);
+        mesh1 = new THREE.Wireframe(geo1, matLine);
+     
+        scene.add(mesh1);
+        mesh1.position.z = 45;
+        
+        //Create 3D text
+        const loader = new THREE.FontLoader()
+        loader.load('fonts/provicali.json', function (font) {
+            //Set up material
+            var textMaterial = new THREE.MeshPhongMaterial( 
+            { color: 0x0e48cf, specular: 0x6696e3 }
+            );
+
+            //Define default text properties
+            const small = {
+                        font: font,
+						size: 0.3,
+						height: 0.12,
+						curveSegments: 12,
+						bevelEnabled: true,
+						bevelThickness: 0.02,
+						bevelSize: 0.01,
+						bevelOffset: 0,
+						bevelSegments: 5,};
+            const large = {
+                        font: font,
+						size: 1,
+						height: 0.3,
+						curveSegments: 12,
+						bevelEnabled: true,
+						bevelThickness: 0.02,
+						bevelSize: 0.01,
+						bevelOffset: 0,
+						bevelSegments: 5,};
+            //Create text geometry
+            const textgeo1 = new THREE.TextGeometry( '  Nothing to\nsee here yet', large );
+            const text1 = new THREE.Mesh( textgeo1, textMaterial);
+            const textgeo2 = new THREE.TextGeometry( 'Check back\n         later', small );
+            const text2 = new THREE.Mesh( textgeo2, textMaterial);
+            
+            text1.geometry.center();
+            text2.geometry.center();
+
+            //Define positions
+            text1.position.z = -5;
+            text1.position.y = 3;
+
+            //Add to scene
+            scene.add(text1);
+            scene.add(text2);
+        })
+        //Move camera with mouse
+        var mouseTolerance = -0.007;
+
+        document.onmousemove = function (e) {
+            var centerX = window.innerWidth * 0.5;
+            var centerY = window.innerHeight * 0.5;
+
+            camera.position.x = (e.clientX - centerX) * 1 *mouseTolerance;
+            camera.position.y = (e.clientY - centerY) * -1 * mouseTolerance;
+        };
+
+        //Render loop
+        function render() {
+            camera.lookAt(new THREE.Vector3(0,0,0));
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+        render();
+    </script>
+</body>
+<div class="footer">
+    <div id="parent">
+        <div class="child"><p>© 2021 Sebastian Moore - </p></div>
+        <div class="child">
+            <div class="tooltip">Hover for legal info
+                <span class="tooltiptext">WebGL® 2021 Khronos Group Inc.<br/>WebGL and Three.js are licensed<br/>under the MIT License.</span>
+            </div>
+        </div>
+        <div id="github">
+            <a href="https://github.com/SebMoore/sebmoore.dev">
+                <img alt="Github" src="images/github.png" width=30" height="30">
+            </a>
+        </div>
+    </div> 
+    
+  </div>
+</html>
