@@ -42,7 +42,6 @@
 
     .tooltip .tooltiptext {
         visibility: hidden;
-        width: 280px;
         background-color: #555;
         color: #fff;
         text-align: center;
@@ -125,6 +124,18 @@
         }
         .header a.logo {
         font-size: 40px;
+        }
+        .footer {
+            font-size: 10px;
+        }
+        #github {
+            position: relative;
+            float: right;
+            top: 50%;
+            -ms-transform: translateY(15%);
+            transform: translateY(15%);
+            padding-right: 10px;
+            padding-bottom: 10px;
         }
     }
     @media screen and (max-width: 330px) {
@@ -487,6 +498,7 @@
     </script>
     
 </body>
+<footer>
 <div class="footer">
     <div id="parent">
         <div class="child"><p>© 2021 Sebastian Moore - </p></div>
@@ -497,10 +509,11 @@
         </div>
         <div id="github">
             <a href="https://github.com/SebMoore/sebmoore.dev">
-                <img alt="Github" src="img/github.png" width=30" height="30">
+                <img alt="Github" src="img/github.png" width=30 height=30>
             </a>
         </div>
     </div> 
     
   </div>
+</footer>
 </html>
