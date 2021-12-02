@@ -113,36 +113,6 @@
         background-color: #ddd;
         color: black;
     }
-    @media screen and (max-width: 500px) {
-        .header a {
-            float: none;
-            display: block;
-            text-align: left;
-        }
-        .header-right {
-            float: none;
-        }
-        .header a.logo {
-        font-size: 40px;
-        }
-        .footer {
-            font-size: 10px;
-        }
-        #github {
-            position: relative;
-            float: right;
-            top: 50%;
-            -ms-transform: translateY(15%);
-            transform: translateY(15%);
-            padding-right: 10px;
-            padding-bottom: 10px;
-        }
-    }
-    @media screen and (max-width: 330px) {
-        .header a.logo {
-        font-size: 35px;
-        }
-    }
     .modal-window {
         font-family: 'VT323', sans-serif;
         font-size: 20px;
@@ -209,6 +179,46 @@
     .modal-window div:not(:last-of-type) {
     	margin-bottom: 15px;
     }
+    @media screen and (max-width: 500px) {
+        .header a {
+            float: none;
+            display: block;
+            text-align: left;
+        }
+        .header-right {
+            float: none;
+        }
+        .header a.logo {
+        font-size: 40px;
+        }
+        .footer {
+            font-size: 10px;
+        }
+        #github {
+            position: relative;
+            float: right;
+            top: 50%;
+            -ms-transform: translateY(15%);
+            transform: translateY(15%);
+            padding-right: 10px;
+            padding-bottom: 10px;
+        }
+        .modal-window > div {
+	    width: 150px;
+        font-size: 15px;
+        }
+    }
+    @media screen and (max-width: 330px) {
+        .header a.logo {
+        font-size: 35px;
+        }
+    }
+    .center {
+        display: block;
+        margin-left: 50%;
+        transform: translateX(-50%);
+        width: 110%;
+    }
 
     </style>
     <div class="header">
@@ -224,7 +234,7 @@
         <div>
               <a href="#" title="Close" class="modal-close">Close</a>
               <h1>Contact:</h1>
-              <img src="img/contact.png" align="right">
+              <img src="img/contact.png" class="center" >
         </div>
     </div>
 </head>
