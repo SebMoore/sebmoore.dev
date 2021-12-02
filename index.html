@@ -5,11 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>3d Cube</title>
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap');
+        
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         html, body {
             margin: 0;
             display: block;
             height: 100%;
+            overscroll-behavior: contain;
         }
     
     #c {
@@ -18,7 +21,7 @@
         display: block;
     }
     .footer {
-        font-family: 'Rubik', sans-serif;
+        font-family: 'Montserrat', sans-serif;
         position: fixed;
         left: 0;
         bottom: 0;
@@ -77,131 +80,400 @@
         transform: translateY(25%);
         padding-right: 10px;
     }
+    .header {
+        font-family: 'VT323', sans-serif;
+        position: fixed;
+        width: 100%;
+        overflow: hidden;
+        background-color: transparent;
+        padding: 10px 10px;
+    }
+    .header a {
+        float: left;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        text-decoration: none;
+        font-size: 30px;
+        line-height: 25px;
+        border-radius: 4px;
+    }
+    .header a.logo {
+        font-size: 50px;
+        font-weight: bold;
+    }
+
+    .header-right {
+        float: right;
+        padding-right: 20px;
+    }
+    .header-right a:hover {
+        background-color: #ddd;
+        color: black;
+    }
+    @media screen and (max-width: 500px) {
+        .header a {
+            float: none;
+            display: block;
+            text-align: left;
+        }
+        .header-right {
+            float: none;
+        }
+    }
+    .modal-window {
+        font-family: 'VT323', sans-serif;
+        font-size: 20px;
+	    position: fixed;
+	    background-color: rgba(255, 255, 255, 0.25);
+	    top: 0;
+	    right: 0;
+	    bottom: 0;
+	    left: 0;
+	    z-index: 999;
+	    visibility: hidden;
+	    opacity: 0;
+	    pointer-events: none;
+	    transition: all 0.3s;
+    }
+    .modal-window:target {
+	    visibility: visible;
+	    opacity: 1;
+	    pointer-events: auto;
+    }
+    .modal-window > div {
+	    width: 400px;
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    padding: 2em;
+	    background: white;
+    }
+    .modal-window header {
+	    font-weight: bold;
+    }
+    .modal-window h1 {
+	    font-size: 150%;
+	    margin: 0 0 15px;
+    }
+    .modal-close {
+	    color: #aaa;
+	    line-height: 50px;
+	    font-size: 80%;
+	    position: absolute;
+	    right: 0;
+	    text-align: center;
+	    top: 0;
+	    width: 70px;
+	    text-decoration: none;
+    }
+    .modal-close:hover {
+	    color: black;
+    }
+
+    a {
+    	color: inherit;
+    }
+    .container {
+    	display: grid;
+    	justify-content: center;
+    	align-items: center;
+    	height: 100vh;
+    }
+    .modal-window > div {
+    	border-radius: 1rem;
+    }
+    .modal-window div:not(:last-of-type) {
+    	margin-bottom: 15px;
+    }
+
     </style>
+    <div class="header">
+        <a class="logo"></a>
+        <div class="header-right">
+            <a href="https://github.com/sebmoore" target="_blank" rel="noopener">Code</a>
+            <a href="https://behance.net/sebmoore" target="_blank" rel="noopener">Art</a>
+            <a href="#contact-modal">Contact</a>
+
+        </div>
+    </div>
+    <div id="contact-modal" class="modal-window">
+        <div>
+              <a href="#" title="Close" class="modal-close">Close</a>
+              <h1>Contact:</h1>
+              <img src="img/contact.png" align="right">
+        </div>
+    </div>
 </head>
 <body>
-    <script src="js/three.js"></script>
-    <script src="js/Line2.js"></script>
-    <script src="js/LineGeometry.js"></script>
-    <script src="js/LineMaterial.js"></script>
-    <script src="js/LineSegments2.js"></script>
-    <script src="js/LineSegmentsGeometry.js"></script>
-    <script src="js/Wireframe.js"></script>
-    <script src="js/WireframeGeometry2.js"></script>
-    <script src="js/EdgesGeometry2.js"></script>
-    <script src="js/FontLoader.js"></script>
-    <script src="js/TextGeometry.js"></script>
+    <script src="js/typewriter.js"></script>
     <script>
-        //Scene + camera setup
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(
-        75,
-        window.innerWidth / window.innerHeight,
-        0.1,
-        1000
-        );
-        camera.position.z = 5;
+        var app = document.getElementsByClassName("logo")[0];
 
-        //Set up renderer
-        var renderer = new THREE.WebGLRenderer( { antialias: true});
-        renderer.setSize(window.innerWidth, (window.innerHeight * 0.999));
-        document.body.appendChild(renderer.domElement);
+        var typewriter = new Typewriter(app, {
+            delay: 75,
+            cursor: '_',
+        });
 
-        //Set up resize handler
-        function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-        window.addEventListener('resize', onWindowResize);
-
-        //Set up hemisphere light (sun)
-        const skyColor = 0xB1E1FF;  // light blue
-        const groundColor = 361401;  // brownish orange
-        const intensity = 2;
-        const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
-        scene.add(light);
-
-
-        //Set up materials
-        var matLine = new THREE.LineMaterial({color: 0x0e48cf,linewidth: 4});
-        matLine.resolution.set(window.innerWidth, window.innerHeight);
-        var matCube = new THREE.MeshBasicMaterial({color: 0x0e48cf});        
-
-        // Add outside cube
-        var cube1 = new THREE.BoxGeometry(10, 10, 100);
-        var geo1 = new THREE.EdgesGeometry2(cube1);
-        mesh1 = new THREE.Wireframe(geo1, matLine);
-     
-        scene.add(mesh1);
-        mesh1.position.z = 45;
-        
-        //Create 3D text
-        const loader = new THREE.FontLoader()
-        loader.load('fonts/provicali.json', function (font) {
-            //Set up material
-            var textMaterial = new THREE.MeshPhongMaterial( 
-            { color: 0x0e48cf, specular: 0x6696e3 }
-            );
-
-            //Define default text properties
-            const small = {
-                        font: font,
-						size: 0.3,
-						height: 0.12,
-						curveSegments: 12,
-						bevelEnabled: true,
-						bevelThickness: 0.02,
-						bevelSize: 0.01,
-						bevelOffset: 0,
-						bevelSegments: 5,};
-            const large = {
-                        font: font,
-						size: 1,
-						height: 0.3,
-						curveSegments: 12,
-						bevelEnabled: true,
-						bevelThickness: 0.02,
-						bevelSize: 0.01,
-						bevelOffset: 0,
-						bevelSegments: 5,};
-            //Create text geometry
-            const textgeo1 = new THREE.TextGeometry( '  Nothing to\nsee here yet', large );
-            const text1 = new THREE.Mesh( textgeo1, textMaterial);
-            const textgeo2 = new THREE.TextGeometry( 'Check back\n         later', small );
-            const text2 = new THREE.Mesh( textgeo2, textMaterial);
-            
-            text1.geometry.center();
-            text2.geometry.center();
-
-            //Define positions
-            text1.position.z = -5;
-            text1.position.y = 3;
-
-            //Add to scene
-            scene.add(text1);
-            scene.add(text2);
-        })
-        //Move camera with mouse
-        var mouseTolerance = -0.007;
-
-        document.onmousemove = function (e) {
-            var centerX = window.innerWidth * 0.5;
-            var centerY = window.innerHeight * 0.5;
-
-            camera.position.x = (e.clientX - centerX) * 1 *mouseTolerance;
-            camera.position.y = (e.clientY - centerY) * -1 * mouseTolerance;
-        };
-
-        //Render loop
-        function render() {
-            camera.lookAt(new THREE.Vector3(0,0,0));
-            requestAnimationFrame(render);
-            renderer.render(scene, camera);
-        }
-
-        render();
+        typewriter
+            .pasteString('> ')
+            .pauseFor(1000)
+            .typeString('Sebastian Moore')
+            .start();
     </script>
+    <script src="js/three.min.js"></script>
+    <script src="js/lib/postprocessing/EffectComposer.js"></script>
+    <script src="js/lib/postprocessing/RenderPass.js"></script>
+    <script src="js/lib/postprocessing/ShaderPass.js"></script>
+    <script src="js/lib/postprocessing/UnrealBloomPass.js"></script>
+    <script src="js/lib/postprocessing/FilmPass.js"></script>
+    <script src="js/lib/shaders/FocusShader.js"></script>
+    <script src="js/lib/shaders/LuminosityHighPassShader.js"></script>
+    <script src="js/OBJLoader.js"></script>
+    <script src="js/lib/shaders/CopyShader.js"></script>
+    <script src="js/lib/shaders/ConvolutionShader.js"></script>
+    <script src="js/lib/shaders/FilmShader.js"></script>
+    <script src="js/require.js"></script>
+    <script>
+        const meshes = [], variables = [];
+        var firstrun = true;
+        var newx = 0;
+        const clock = new THREE.Clock();
+        const rHalf = 10;
+        const effectController = {
+				showDots: true,
+				showLines: true,
+				minDistance: 5,
+				limitConnections: false,
+				maxConnections: 10,
+				particleCount: 50
+			};
+        window.linepositions = new Float32Array(3000000);
+        window.colors = new Float32Array(3000000);
+        var objects = [];
+
+        init();
+		animate();
+        function init() { 
+            
+            window.raycaster = new THREE.Raycaster(); // create once
+            window.mouse = new THREE.Vector2(); // create once
+
+            const container = document.querySelector('#container');
+		    window.camera = new THREE.PerspectiveCamera( 20, window.innerWidth / window.innerHeight, 1, 50000 );
+		    camera.position.set( 0, 0, 4000 );
+		    window.scene = new THREE.Scene();
+		    scene.background = new THREE.Color( 0x000104 );
+		    scene.fog = new THREE.FogExp2( 0x000104, 0.0001 ); //0.0001175
+		    camera.lookAt(scene.position);
+		    const loader = new THREE.OBJLoader();
+		    loader.load( 'models/text.obj', function ( object ) {
+		    	const positions = combineBuffer( object, 'position' );
+		    	createMesh( positions, scene, 4, 0, 0, 0, 0xff7744 );
+		    } );
+
+            //Set up renderer
+            window.renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setSize(window.innerWidth, (window.innerHeight * 0.999));
+            renderer.autoClear = false;
+		    document.body.appendChild(renderer.domElement);
+            const newx = 0;
+            //Set up mouse controls
+            var mouseTolerance = 0.7;
+            document.onmousemove = function (e) {
+                var centerX = window.innerWidth * 0.5;
+                var centerY = window.innerHeight * 0.5;
+                camera.position.x = (e.clientX - centerX) * 0.5 *mouseTolerance;
+                camera.position.y = (e.clientY - centerY) * -0.5 * mouseTolerance;
+            };  
+
+            document.ontouchmove = function (e2) {
+                var centerX = window.innerWidth * 0.5;
+                var centerY = window.innerHeight * 0.5;
+                camera.position.x = (e2.touches[0].clientX - centerX) * 1 *mouseTolerance;
+                camera.position.y = (e2.touches[0].clientY - centerY) * -1 * mouseTolerance;  
+            };
+
+            window.objectparent = new THREE.Object3D();
+		    scene.add(objectparent);
+
+            window.grid = new THREE.Points( new THREE.PlaneGeometry( 15000, 25000, 80, 64 ), new THREE.PointsMaterial( { color: 0x4000ff, size: 30 } ) );
+		    grid.rotation.x = - Math.PI / 2;
+            grid.position.y = -300;
+		    objectparent.add(grid);
+
+		    // postprocessing
+		    const renderModel = new THREE.RenderPass( scene, camera );
+            const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 100, 100);
+			bloomPass.threshold = 0;
+			bloomPass.strength = 1;
+			bloomPass.radius = 0;
+		    //const effectBloom = new THREE.BloomPass( 0.75 );
+		    //const effectFilm = new THREE.FilmPass( 0.5, 0.5, 1448, false );
+		    var effectFocus = new THREE.ShaderPass( THREE.FocusShader );
+		    effectFocus.uniforms[ "screenWidth" ].value = window.innerWidth * window.devicePixelRatio;
+		    effectFocus.uniforms[ "screenHeight" ].value = window.innerHeight * window.devicePixelRatio;
+		    window.composer = new THREE.EffectComposer( renderer );
+		    composer.addPass( renderModel );
+            composer.addPass( bloomPass );
+
+		    //composer.addPass( effectBloom );
+            composer.addPass( effectFocus );
+		    //composer.addPass( effectFilm );
+		    
+
+            //Set up resize handler
+            window.addEventListener('resize', onWindowResize);
+
+            const linegeo = new THREE.BufferGeometry();
+            linegeo.setAttribute( 'position', new THREE.BufferAttribute( linepositions, 3 ).setUsage( THREE.DynamicDrawUsage ) );
+            linegeo.setAttribute( 'color', new THREE.BufferAttribute( colors, 3 ).setUsage( THREE.DynamicDrawUsage ) );
+
+            linegeo.computeBoundingSphere();
+
+            linegeo.setDrawRange( 0, 0 );
+
+            const linemat = new THREE.LineBasicMaterial( {
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                color: 0xff0011
+            } );
+            linesMesh = new THREE.LineSegments( linegeo, linemat );
+            objects.push(linesMesh);
+            objectparent.add( linesMesh );
+            linesMesh.scale.x = linesMesh.scale.y = linesMesh.scale.z = 4
+            linesMesh.position.y = -300;
+
+    
+        }
+        function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+		    	camera.updateProjectionMatrix();
+		    	camera.lookAt( scene.position );
+		    	renderer.setSize( window.innerWidth, window.innerHeight );
+		    	composer.setSize( window.innerWidth, window.innerHeight );
+		    	effectFocus.uniforms[ "screenWidth" ].value = window.innerWidth * window.devicePixelRatio;
+		    	effectFocus.uniforms[ "screenHeight" ].value = window.innerHeight * window.devicePixelRatio;
+        }
+        function combineBuffer( model, bufferName ) {       
+            var count = 0;
+            model.traverse( function ( child ) {
+                if ( child.isMesh ) {
+                    const buffer = child.geometry.attributes[ bufferName ];
+                    count += buffer.array.length;                
+                }            
+            } );
+            const combined = new Float32Array( count );
+            let offset = 0;
+            model.traverse( function ( child ) {            
+                if ( child.isMesh ) {                
+                    window.buffer = child.geometry.attributes[ bufferName ];                
+                    combined.set( buffer.array, offset );
+                    offset += buffer.array.length;                
+                }            
+            } );
+            return new THREE.BufferAttribute( combined, 3 );
+        }
+
+        function createMesh( positions, scene, scale, x, y, z, color ) { 
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute( 'position', positions.clone() );
+            geometry.setAttribute( 'initialPosition', positions.clone() );            
+            geometry.attributes.position.setUsage( THREE.DynamicDrawUsage );                                       
+            mesh = new THREE.Points( geometry, new THREE.PointsMaterial( { size: 30, color: 0x3b82f5 } ) );
+            mesh.scale.x = mesh.scale.y = mesh.scale.z = scale;
+            mesh.position.y = -300
+            mesh.position.x = -40           
+            objectparent.add(mesh);
+            meshes.push( {
+                mesh: mesh, verticesDown: 0, verticesUp: 0, direction: 0, speed: 15, delay: Math.floor( 200 + 200 * Math.random() ), start: Math.floor( 100 + 200 * Math.random() ), variables: variables,
+            } );
+
+        }
+
+        function animate() {
+            camera.lookAt(new THREE.Vector3(0,-100,0));
+            requestAnimationFrame( animate );
+            render();
+        }
+
+        function render() {
+            let delta = 10 * clock.getDelta();     
+            delta = delta < 2 ? delta : 2;        
+            //objectparent.rotation.y += - 0.02 * delta;
+            const data = meshes[0];
+            const positions = data.mesh.geometry.attributes.position;
+            const initialPositions = data.mesh.geometry.attributes.initialPosition;        
+            const count = positions.count;
+            if (firstrun) {
+                const initcount = 10000
+                for ( let i = 0; i < initcount; i ++ ) {          
+                    const px = Math.floor(Math.random() * 600) * (Math.round(Math.random()) ? 1 : -1)
+                    const py = Math.floor(Math.random() * 600) * (Math.round(Math.random()) ? 1 : -1)
+                    const pz = Math.floor(Math.random() * 600) * (Math.round(Math.random()) ? 1 : -1)
+                    positions.setXYZ(
+                                i,
+                                px,
+                                py,
+                                pz
+                    ); 
+                }
+                firstrun = false;
+            }
+            if ( data.start > 0 ) {            
+                data.start -= 1;            
+            } else {            
+                if ( data.direction === 0 ) {                
+                    data.direction = - 1;                
+                }            
+            }
+            for ( let i = 0; i < count; i ++ ) {            
+                const px = positions.getX( i );
+                const py = positions.getY( i );
+                const pz = positions.getZ( i );
+            
+                // rising up
+                const ix = initialPositions.getX( i );
+                const iy = initialPositions.getY( i );
+                const iz = initialPositions.getZ( i );
+            
+                const dx = Math.abs( px - ix );
+                const dy = Math.abs( py - iy );
+                const dz = Math.abs( pz - iz );
+            
+                const d = dx + dy + dx;                
+                if ( d > 1 ) {                    
+                    positions.setXYZ(
+                        i,
+                        px - ( px - ix ) / 20  * Math.random(),/// dx * data.speed * 0.1 * delta * ( 0.85 - Math.random() ),
+                        py - ( py - iy ) / 10 * Math.random(), /// dy * data.speed * 1 * delta * ( 1 + Math.random() ),
+                        pz - ( pz - iz )  / 20 * Math.random() /// dz * data.speed * 1 * delta * ( 0.85 - Math.random() )
+                    );                    
+                } else {                    
+                    data.verticesUp += 1;                    
+                }                          
+            }             
+            // all points in position
+            if ( data.verticesUp >= count ) {            
+                if ( data.delay <= 0 ) {                
+                    data.direction = - 1;
+                    data.speed = 15;
+                    data.verticesUp = 0;
+                    data.delay = 120;                
+                } else {                
+                    data.delay -= 1;                
+                }            
+            }        
+            positions.needsUpdate = true;
+            
+            
+        composer.render( 0.01 );
+        }
+    </script>
+    
 </body>
 <div class="footer">
     <div id="parent">
@@ -213,7 +485,7 @@
         </div>
         <div id="github">
             <a href="https://github.com/SebMoore/sebmoore.dev">
-                <img alt="Github" src="images/github.png" width=30" height="30">
+                <img alt="Github" src="img/github.png" width=30" height="30">
             </a>
         </div>
     </div> 
