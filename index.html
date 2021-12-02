@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -121,6 +122,14 @@
         }
         .header-right {
             float: none;
+        }
+        .header a.logo {
+        font-size: 40px;
+        }
+    }
+    @media screen and (max-width: 330px) {
+        .header a.logo {
+        font-size: 35px;
         }
     }
     .modal-window {
@@ -261,6 +270,19 @@
             const container = document.querySelector('#container');
 		    window.camera = new THREE.PerspectiveCamera( 20, window.innerWidth / window.innerHeight, 1, 50000 );
 		    camera.position.set( 0, 0, 4000 );
+
+            //Change camera position based on aspect ratio
+            var ratio = window.innerWidth / window.innerHeight;
+            if (ratio < 0.5) {
+                camera.position.set( 0, 0, 6000 );
+            } else if (ratio < 0.75) {
+                camera.position.set( 0, 0, 5000 );
+            } else if (ratio < 1.25) {
+                camera.position.set( 0, 0, 4000 );
+            } else {
+                camera.position.set( 0, 0, 3000 );
+            }
+
 		    window.scene = new THREE.Scene();
 		    scene.background = new THREE.Color( 0x000104 );
 		    scene.fog = new THREE.FogExp2( 0x000104, 0.0001 );
@@ -308,7 +330,7 @@
 			bloomPass.threshold = 0;
 			bloomPass.strength = 1;
 			bloomPass.radius = 0;
-		    var effectFocus = new THREE.ShaderPass( THREE.FocusShader );
+		    window.effectFocus = new THREE.ShaderPass( THREE.FocusShader );
 		    effectFocus.uniforms[ "screenWidth" ].value = window.innerWidth * window.devicePixelRatio;
 		    effectFocus.uniforms[ "screenHeight" ].value = window.innerHeight * window.devicePixelRatio;
 		    window.composer = new THREE.EffectComposer( renderer );
