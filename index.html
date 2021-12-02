@@ -238,7 +238,6 @@
     <script>
         const meshes = [], variables = [];
         var firstrun = true;
-        var newx = 0;
         const clock = new THREE.Clock();
         const rHalf = 10;
         const effectController = {
@@ -256,16 +255,13 @@
         init();
 		animate();
         function init() { 
-            
-            window.raycaster = new THREE.Raycaster(); // create once
-            window.mouse = new THREE.Vector2(); // create once
 
             const container = document.querySelector('#container');
 		    window.camera = new THREE.PerspectiveCamera( 20, window.innerWidth / window.innerHeight, 1, 50000 );
 		    camera.position.set( 0, 0, 4000 );
 		    window.scene = new THREE.Scene();
 		    scene.background = new THREE.Color( 0x000104 );
-		    scene.fog = new THREE.FogExp2( 0x000104, 0.0001 ); //0.0001175
+		    scene.fog = new THREE.FogExp2( 0x000104, 0.0001 );
 		    camera.lookAt(scene.position);
 		    const loader = new THREE.OBJLoader();
 		    loader.load( 'models/text.obj', function ( object ) {
@@ -279,7 +275,7 @@
             renderer.setSize(window.innerWidth, (window.innerHeight * 0.999));
             renderer.autoClear = false;
 		    document.body.appendChild(renderer.domElement);
-            const newx = 0;
+
             //Set up mouse controls
             var mouseTolerance = 0.7;
             document.onmousemove = function (e) {
@@ -304,25 +300,19 @@
             grid.position.y = -300;
 		    objectparent.add(grid);
 
-		    // postprocessing
+		    // Postprocessing
 		    const renderModel = new THREE.RenderPass( scene, camera );
             const bloomPass = new THREE.UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 100, 100);
 			bloomPass.threshold = 0;
 			bloomPass.strength = 1;
 			bloomPass.radius = 0;
-		    //const effectBloom = new THREE.BloomPass( 0.75 );
-		    //const effectFilm = new THREE.FilmPass( 0.5, 0.5, 1448, false );
 		    var effectFocus = new THREE.ShaderPass( THREE.FocusShader );
 		    effectFocus.uniforms[ "screenWidth" ].value = window.innerWidth * window.devicePixelRatio;
 		    effectFocus.uniforms[ "screenHeight" ].value = window.innerHeight * window.devicePixelRatio;
 		    window.composer = new THREE.EffectComposer( renderer );
 		    composer.addPass( renderModel );
             composer.addPass( bloomPass );
-
-		    //composer.addPass( effectBloom );
             composer.addPass( effectFocus );
-		    //composer.addPass( effectFilm );
-		    
 
             //Set up resize handler
             window.addEventListener('resize', onWindowResize);
@@ -403,7 +393,6 @@
         function render() {
             let delta = 10 * clock.getDelta();     
             delta = delta < 2 ? delta : 2;        
-            //objectparent.rotation.y += - 0.02 * delta;
             const data = meshes[0];
             const positions = data.mesh.geometry.attributes.position;
             const initialPositions = data.mesh.geometry.attributes.initialPosition;        
@@ -435,7 +424,6 @@
                 const py = positions.getY( i );
                 const pz = positions.getZ( i );
             
-                // rising up
                 const ix = initialPositions.getX( i );
                 const iy = initialPositions.getY( i );
                 const iz = initialPositions.getZ( i );
@@ -448,15 +436,15 @@
                 if ( d > 1 ) {                    
                     positions.setXYZ(
                         i,
-                        px - ( px - ix ) / 20  * Math.random(),/// dx * data.speed * 0.1 * delta * ( 0.85 - Math.random() ),
-                        py - ( py - iy ) / 10 * Math.random(), /// dy * data.speed * 1 * delta * ( 1 + Math.random() ),
-                        pz - ( pz - iz )  / 20 * Math.random() /// dz * data.speed * 1 * delta * ( 0.85 - Math.random() )
+                        px - ( px - ix ) / 20  * Math.random(),
+                        py - ( py - iy ) / 10 * Math.random(), 
+                        pz - ( pz - iz )  / 20 * Math.random()
                     );                    
                 } else {                    
                     data.verticesUp += 1;                    
                 }                          
             }             
-            // all points in position
+            // All points in position
             if ( data.verticesUp >= count ) {            
                 if ( data.delay <= 0 ) {                
                     data.direction = - 1;
