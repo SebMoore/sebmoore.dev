@@ -212,17 +212,19 @@
     <script src="js/typewriter.js"></script>
     <script>
         var app = document.getElementsByClassName("logo")[0];
-
-        var typewriter = new Typewriter(app, {
-            delay: 75,
-            cursor: '_',
+        document.addEventListener("DOMContentLoaded", function() {
+            var typewriter = new Typewriter(app, {
+                delay: 75,
+                cursor: '_',
+            });
+        
+            typewriter
+                .pasteString('> ')
+                .pauseFor(1000)
+                .typeString('Sebastian Moore')
+                .start();
         });
 
-        typewriter
-            .pasteString('> ')
-            .pauseFor(1000)
-            .typeString('Sebastian Moore')
-            .start();
     </script>
     <script src="js/three.min.js"></script>
     <script src="js/lib/postprocessing/EffectComposer.js"></script>
